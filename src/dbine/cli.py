@@ -20,5 +20,10 @@ def main():
         dbergraph = gg.Dbergraph(connection.get_database())
         dbergraph.Database.update()
         dbergraph.to_dot_helper().write_image(pdfFilePath)
-        while 0 < argv.len():
-          gg.Pdf.convert(pdfFilePath, argv.shift())
+    case "pdf":
+      match argv.shift():
+        case "convert":
+          fromFilePath = argv.shift()
+          toFilePath = argv.shift()
+          if fromFilePath is not None and toFilePath is not None:
+            gg.Pdf.convert(fromFilePath, toFilePath)
