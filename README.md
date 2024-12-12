@@ -21,3 +21,19 @@ with db.Connection(db.ConnectionOptions(**{"Type": type, "DatabaseName": "dbine"
   dbergraph.Database.update()
   dbergraph.to_dot_helper().write_image("""./images/database_{}.pdf""".format(type.name.lower()))
 ```
+
+## CLI
+### graph
+Convert database table definition to PDF
+
+`dbine graph connection_options.yaml`
+
+#### [connection_options.yaml]
+```yaml
+Type: PostgreSQL
+DatabaseName: dbine
+UserName: reader
+Password: READER
+Host: localhost
+Port: ''
+```
