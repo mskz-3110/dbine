@@ -8,7 +8,10 @@ Auxiliary tools related to databases
 |0.1.0|Release dbine|
 
 ## Installation
+### dbine
 `pip install dbine`
+
+### [graspgraph](https://github.com/mskz-3110/graspgraph)
 
 ## Usage
 ![](./images/database_mysql.png)
@@ -26,9 +29,9 @@ with db.Connection(db.ConnectionOptions(**{"Type": type, "DatabaseName": "dbine"
 ### graph
 Convert database table definition to PDF
 
-`dbine graph connection_options.yaml`
+`dbine graph database.yaml`
 
-#### [connection_options.yaml]
+#### [database.yaml]
 ```yaml
 Type: PostgreSQL
 DatabaseName: dbine
@@ -37,3 +40,8 @@ Password: READER
 Host: localhost
 Port: ''
 ```
+
+### pdf convert
+Convert PDF to image
+
+`dbine pdf convert database.pdf database.png`
