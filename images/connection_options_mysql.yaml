@@ -1,0 +1,6 @@
+Type: MySQL
+DatabaseName: dbine
+UserName: reader
+Password: READER
+Host: localhost
+Port: ''

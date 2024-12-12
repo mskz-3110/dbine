@@ -1,0 +1,6 @@
+Type: PostgreSQL
+DatabaseName: dbine
+UserName: reader
+Password: READER
+Host: localhost
+Port: ''

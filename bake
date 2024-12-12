@@ -1,0 +1,15 @@
+#!/bin/bash
+
+case ${1:-test} in
+  "test")
+    shift 1
+    pipenv run pytest -s $@
+    ;;
+  "build")
+    rm -fr dist *.egg-info src/*.egg-info
+    python -m build
+    ;;
+  "upload")
+    python -m twine upload --repository ${2:-testpypi} dist/*
+    ;;
+esac

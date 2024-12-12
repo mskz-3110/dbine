@@ -1,0 +1,50 @@
+Tables:
+- Namespace: dbine.psql
+  Name: no_comments
+  Comment: コメントなしテーブル
+  Columns:
+  - Name: id
+    Type: INTEGER
+    Comment: ''
+    Caption: PK
+    Relations:
+    - dbine.psql.relations.no_comment_id
+  - Name: name
+    Type: CHARACTER VARYING(10)
+    Comment: ''
+    Caption: ''
+    Relations: []
+- Namespace: dbine.psql
+  Name: with_comments
+  Comment: コメントつきテーブル
+  Columns:
+  - Name: id
+    Type: INTEGER
+    Comment: ID
+    Caption: PK
+    Relations:
+    - dbine.psql.relations.with_comment_id
+  - Name: name
+    Type: CHARACTER VARYING(10)
+    Comment: 名前
+    Caption: ''
+    Relations: []
+- Namespace: dbine.psql
+  Name: relations
+  Comment: ''
+  Columns:
+  - Name: id
+    Type: INTEGER
+    Comment: ID
+    Caption: PK
+    Relations: []
+  - Name: no_comment_id
+    Type: INTEGER
+    Comment: コメントなしテーブルのID
+    Caption: FK
+    Relations: []
+  - Name: with_comment_id
+    Type: INTEGER
+    Comment: コメントつきテーブルのID
+    Caption: FK
+    Relations: []
