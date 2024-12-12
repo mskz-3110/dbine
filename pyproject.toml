@@ -15,7 +15,9 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 dependencies = [
-  "sqlparse",
+  "psycopg",
+  "mysql-connector-python",
+  "graspgraph",
 ]
 
 [project.scripts]
