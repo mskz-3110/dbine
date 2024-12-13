@@ -1,42 +1,68 @@
 # dbine
 Auxiliary tools related to databases
 
+## Supported database types
+- PostgreSQL
+- MySQL
+
 ## Versions
 
 |Version|Summary|
 |:--|:--|
-|0.1.0|Release dbine|
+|0.1.1|Release dbine|
 
 ## Installation
 ### dbine
 `pip install dbine`
 
-### [graspgraph](https://github.com/mskz-3110/graspgraph)
+### [Dependency of graspgraph](https://github.com/mskz-3110/graspgraph)
 
-## Usage
-![](./images/database_mysql.png)
-```python
-import dbine as db
+## Image
+### MySQL
+```sql
+DROP DATABASE IF EXISTS dbine;
+CREATE DATABASE dbine;
 
-type = db.Type.PostgreSQL
-with db.Connection(db.ConnectionOptions(**{"Type": type, "DatabaseName": "dbine", "UserName": "reader", "Password": "READER"})) as connection:
-  dbergraph = gg.Dbergraph(connection.get_database())
-  dbergraph.Database.update()
-  dbergraph.to_dot_helper().write_image("""./images/database_{}.pdf""".format(type.name.lower()))
+DROP USER IF EXISTS reader;
+CREATE USER reader IDENTIFIED BY 'READER';
+
+GRANT ALL ON dbine.* TO reader;
+
+DROP TABLE IF EXISTS no_comments;
+CREATE TABLE no_comments (
+  id INT PRIMARY KEY,
+  name VARCHAR(10)
+) COMMENT 'コメントなしテーブル';
+
+DROP TABLE IF EXISTS with_comments;
+CREATE TABLE with_comments (
+  id INT PRIMARY KEY COMMENT 'ID',
+  name VARCHAR(10) COMMENT '名前'
+) COMMENT 'コメントつきテーブル';
+
+DROP TABLE IF EXISTS relations;
+CREATE TABLE relations (
+  id INT PRIMARY KEY COMMENT 'ID',
+  no_comment_id INT COMMENT 'コメントなしテーブルのID',
+  with_comment_id INT COMMENT 'コメントつきテーブルのID'
+);
 ```
 
-## CLI
-### graph
-Convert database table definition to PDF
+### PNG
+![](./images/database_mysql.png)
 
-`dbine graph database.yaml`
+## CLI
+### pdf write
+Write database table definition to PDF
+
+`dbine pdf write database.yaml database.pdf`
 
 #### [database.yaml]
 ```yaml
 Type: PostgreSQL
-DatabaseName: dbine
-UserName: reader
-Password: READER
+DatabaseName: database
+UserName: user
+Password: password
 Host: localhost
 Port: ''
 ```
