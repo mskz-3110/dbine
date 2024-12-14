@@ -38,9 +38,9 @@ CREATE TABLE relations (
 ![](./images/database_mysql.png)
 
 ## What is possible
-### 1. Log in to the database and get table definition information
-### 2. Output table definition information as an ER diagram-like image in PDF
-### 3. Convert PDF to image
+1. Log in to the database and get table definition information
+2. Output table definition information as an ER diagram-like image in PDF
+3. Convert PDF to image
 
 ## Reason for development
 - I want to output the relationships between database table definitions as a PDF or image so that I can understand them at a glance
