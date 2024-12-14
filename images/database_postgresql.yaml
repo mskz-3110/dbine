@@ -1,5 +1,5 @@
 Tables:
-- Namespace: dbine.psql
+- Namespace: db.psql
   Name: no_comments
   Comment: コメントなしテーブル
   Columns:
@@ -8,13 +8,13 @@ Tables:
     Comment: ''
     Caption: PK
     Relations:
-    - dbine.psql.relations.no_comment_id
+    - db.psql.relations.no_comment_id
   - Name: name
     Type: CHARACTER VARYING(10)
     Comment: ''
     Caption: ''
     Relations: []
-- Namespace: dbine.psql
+- Namespace: db.psql
   Name: with_comments
   Comment: コメントつきテーブル
   Columns:
@@ -23,13 +23,13 @@ Tables:
     Comment: ID
     Caption: PK
     Relations:
-    - dbine.psql.relations.with_comment_id
+    - db.psql.relations.with_comment_id
   - Name: name
     Type: CHARACTER VARYING(10)
     Comment: 名前
     Caption: ''
     Relations: []
-- Namespace: dbine.psql
+- Namespace: db.psql
   Name: relations
   Comment: ''
   Columns:

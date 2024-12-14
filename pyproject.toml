@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dbine"
-version = "0.1.1"
+version = "0.1.2"
 authors = [{name = "mskz-3110", email = "mskz.saito@gmail.com"}]
 description = "Auxiliary tools related to databases"
 readme = "README.md"

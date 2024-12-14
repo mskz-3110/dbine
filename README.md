@@ -1,32 +1,18 @@
 # dbine
 Auxiliary tools related to databases
 
-## Supported database types
-- PostgreSQL
-- MySQL
+## Concept
+PDF output from database table definitions
 
-## Versions
-
-|Version|Summary|
-|:--|:--|
-|0.1.1|Release dbine|
-
-## Installation
-### dbine
-`pip install dbine`
-
-### [Dependency of graspgraph](https://github.com/mskz-3110/graspgraph)
-
-## Image
-### MySQL
+### Database table definitions(MySQL)
 ```sql
-DROP DATABASE IF EXISTS dbine;
-CREATE DATABASE dbine;
+DROP DATABASE IF EXISTS db;
+CREATE DATABASE db;
 
-DROP USER IF EXISTS reader;
-CREATE USER reader IDENTIFIED BY 'READER';
+DROP USER IF EXISTS _user_;
+CREATE USER _user_ IDENTIFIED BY 'pass';
 
-GRANT ALL ON dbine.* TO reader;
+GRANT ALL ON db.* TO _user_;
 
 DROP TABLE IF EXISTS no_comments;
 CREATE TABLE no_comments (
@@ -48,26 +34,57 @@ CREATE TABLE relations (
 );
 ```
 
-### PNG
+### PDF(PNG)
 ![](./images/database_mysql.png)
+
+## What is possible
+### 1. Log in to the database and get table definition information
+### 2. Output table definition information as an ER diagram-like image in PDF
+### 3. Convert PDF to image
+
+## Reason for development
+- I want to output the relationships between database table definitions as a PDF or image so that I can understand them at a glance
+
+## Supported database types
+- PostgreSQL
+- MySQL
+
+## Versions
+
+|Version|Summary|
+|:--|:--|
+|0.1.2|Release dbine|
+
+## Installation
+### [dbine](https://pypi.org/project/dbine/)
+`pip install dbine`
+
+### [Graphviz](https://graphviz.org/download/)
+Required for PDF output
+
+### [Poppler](https://github.com/Belval/pdf2image?tab=readme-ov-file)
+Required for PDF image conversion
 
 ## CLI
 ### pdf write
 Write database table definition to PDF
 
-`dbine pdf write database.yaml database.pdf`
-
-#### [database.yaml]
+#### 1. Prepare database connection information file(database.yaml)
+**[database.yaml]**
 ```yaml
-Type: PostgreSQL
-DatabaseName: database
-UserName: user
-Password: password
+Type: MySQL
+DatabaseName: db
+UserName: _user_
+Password: pass
 Host: localhost
-Port: ''
+Port: 0
 ```
+
+#### 2. PDF output by CLI execution
+`dbine pdf write database.yaml database.pdf`
 
 ### pdf convert
 Convert PDF to image
 
+#### 1. Image(PNG) conversion by CLI execution
 `dbine pdf convert database.pdf database.png`

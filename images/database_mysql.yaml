@@ -1,5 +1,5 @@
 Tables:
-- Namespace: dbine
+- Namespace: db
   Name: no_comments
   Comment: コメントなしテーブル
   Columns:
@@ -8,13 +8,13 @@ Tables:
     Comment: ''
     Caption: PK
     Relations:
-    - dbine.relations.no_comment_id
+    - db.relations.no_comment_id
   - Name: name
     Type: VARCHAR(10)
     Comment: ''
     Caption: ''
     Relations: []
-- Namespace: dbine
+- Namespace: db
   Name: relations
   Comment: ''
   Columns:
@@ -33,7 +33,7 @@ Tables:
     Comment: コメントつきテーブルのID
     Caption: FK
     Relations: []
-- Namespace: dbine
+- Namespace: db
   Name: with_comments
   Comment: コメントつきテーブル
   Columns:
@@ -42,7 +42,7 @@ Tables:
     Comment: ID
     Caption: PK
     Relations:
-    - dbine.relations.with_comment_id
+    - db.relations.with_comment_id
   - Name: name
     Type: VARCHAR(10)
     Comment: 名前

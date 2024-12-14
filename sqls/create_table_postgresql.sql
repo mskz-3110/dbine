@@ -1,5 +1,9 @@
 \encoding UTF8;
 
+DROP SCHEMA IF EXISTS psql;
+CREATE SCHEMA psql;
+GRANT ALL ON SCHEMA psql TO _user_;
+
 DROP TABLE IF EXISTS psql.no_comments;
 CREATE TABLE psql.no_comments (
   id INT PRIMARY KEY,

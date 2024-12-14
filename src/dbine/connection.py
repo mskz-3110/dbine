@@ -23,22 +23,22 @@ class Type(Enum):
         return type
     return Type.PostgreSQL
 
-class ConnectionOptions(BaseModel):
+class ConnectionConfig(BaseModel):
   Type: Type
   DatabaseName: str
   UserName: str
   Password: str
   Host: str = "localhost"
-  Port: str = ""
+  Port: int = 0
 
   def update(self):
     match self.Type:
       case Type.PostgreSQL:
-        if len(self.Port) == 0:
-          self.Port = "5432"
+        if self.Port == 0:
+          self.Port = 5432
       case Type.MySQL:
-        if len(self.Port) == 0:
-          self.Port = "3306"
+        if self.Port == 0:
+          self.Port = 3306
     return self
 
   def to_string(self):
@@ -61,21 +61,21 @@ class ConnectionOptions(BaseModel):
 
   def load(self, filePath):
     with open(filePath, "r", encoding = "utf-8") as file:
-      connectionOptions = ConnectionOptions.from_yaml(file)
-      self.Type = connectionOptions.Type
-      self.DatabaseName = connectionOptions.DatabaseName
-      self.UserName = connectionOptions.UserName
-      self.Password = connectionOptions.Password
-      self.Host = connectionOptions.Host
-      self.Port = connectionOptions.Port
+      connectionConfig = ConnectionConfig.from_yaml(file)
+      self.Type = connectionConfig.Type
+      self.DatabaseName = connectionConfig.DatabaseName
+      self.UserName = connectionConfig.UserName
+      self.Password = connectionConfig.Password
+      self.Host = connectionConfig.Host
+      self.Port = connectionConfig.Port
     return self
 
   def save(self, filePath):
     gg.Path.from_file_path(filePath).makedirs()
     with open(filePath, "w", encoding = "utf-8", newline = "\n") as file:
-      connectionOptions = self.model_dump()
-      connectionOptions["Type"] = connectionOptions["Type"].name
-      yaml.dump(connectionOptions, file, sort_keys = False, default_flow_style = False, allow_unicode = True)
+      connectionConfig = self.model_dump()
+      connectionConfig["Type"] = connectionConfig["Type"].name
+      yaml.dump(connectionConfig, file, sort_keys = False, default_flow_style = False, allow_unicode = True)
     return self
 
   @classmethod
@@ -84,18 +84,18 @@ class ConnectionOptions(BaseModel):
 
   @classmethod
   def from_yaml(cls, stream):
-    connectionOptions = yaml.safe_load(stream) or ConnectionOptions.default_dict()
-    connectionOptions["Type"] = Type.from_name(connectionOptions["Type"])
-    return ConnectionOptions(**connectionOptions)
+    connectionConfig = yaml.safe_load(stream) or ConnectionConfig.default_dict()
+    connectionConfig["Type"] = Type.from_name(connectionConfig["Type"])
+    return ConnectionConfig(**connectionConfig)
 
   @classmethod
   def from_file_path(cls, filePath):
-    return ConnectionOptions(**ConnectionOptions.default_dict()).load(filePath)
+    return ConnectionConfig(**ConnectionConfig.default_dict()).load(filePath)
 
 class Connection:
-  def __init__(self, connectionOptions):
+  def __init__(self, connectionConfig):
     self.__Connections = []
-    self.open(connectionOptions)
+    self.open(connectionConfig)
 
   @property
   def Cursor(self):
@@ -109,17 +109,17 @@ class Connection:
   def __exit__(self, *args):
     self.close()
 
-  def open(self, connectionOptions):
+  def open(self, connectionConfig):
     self.close()
-    connectionOptions.update()
-    self.ConnectionOptions = connectionOptions
-    match connectionOptions.Type:
+    connectionConfig.update()
+    match connectionConfig.Type:
       case Type.PostgreSQL:
-        connection = psycopg.connect(connectionOptions.to_string())
+        connection = psycopg.connect(connectionConfig.to_string())
         self.__Connections = [connection.cursor(), connection]
       case Type.MySQL:
-        connection = mysql.connector.connect(**connectionOptions.to_dict())
+        connection = mysql.connector.connect(**connectionConfig.to_dict())
         self.__Connections = [connection.cursor(), connection]
+    self.ConnectionConfig = connectionConfig
     return self
 
   def close(self):
@@ -131,12 +131,12 @@ class Connection:
 
   def get_database(self):
     database = gg.Database()
-    match self.ConnectionOptions.Type:
+    match self.ConnectionConfig.Type:
       case Type.PostgreSQL:
         cursor = self.Cursor
         cursor.execute("SELECT schemaname, tablename FROM pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'")
         for tableDefinitions in cursor.fetchall():
-          table = gg.Table(**{"Namespace": """{}.{}""".format(self.ConnectionOptions.DatabaseName, tableDefinitions[0]), "Name": tableDefinitions[1]})
+          table = gg.Table(**{"Namespace": """{}.{}""".format(self.ConnectionConfig.DatabaseName, tableDefinitions[0]), "Name": tableDefinitions[1]})
           cursor.execute("""SELECT pg_description.description FROM pg_class JOIN pg_description ON pg_class.oid = pg_description.objoid WHERE pg_class.relname = '{}' AND pg_description.objsubid = 0""".format(tableDefinitions[1]))
           if cursor.rowcount == 1:
             table.Comment = cursor.fetchone()[0]
@@ -148,7 +148,7 @@ class Connection:
             cursor.execute("""SELECT pg_description.description FROM pg_class JOIN pg_description ON pg_class.oid = pg_description.objoid WHERE pg_class.relname = '{}' AND pg_description.objsubid = {}""".format(tableDefinitions[1], columnDefinitions[3]))
             if cursor.rowcount == 1:
               column.Comment = cursor.fetchone()[0]
-            cursor.execute("""SELECT constraint_type FROM information_schema.table_constraints JOIN information_schema.constraint_column_usage ON information_schema.table_constraints.constraint_name = information_schema.constraint_column_usage.constraint_name WHERE information_schema.constraint_column_usage.table_catalog = '{}' AND information_schema.constraint_column_usage.table_schema = '{}' AND information_schema.constraint_column_usage.table_name = '{}' AND information_schema.constraint_column_usage.column_name = '{}'""".format(self.ConnectionOptions.DatabaseName, tableDefinitions[0], tableDefinitions[1], columnDefinitions[0]))
+            cursor.execute("""SELECT constraint_type FROM information_schema.table_constraints JOIN information_schema.constraint_column_usage ON information_schema.table_constraints.constraint_name = information_schema.constraint_column_usage.constraint_name WHERE information_schema.constraint_column_usage.table_catalog = '{}' AND information_schema.constraint_column_usage.table_schema = '{}' AND information_schema.constraint_column_usage.table_name = '{}' AND information_schema.constraint_column_usage.column_name = '{}'""".format(self.ConnectionConfig.DatabaseName, tableDefinitions[0], tableDefinitions[1], columnDefinitions[0]))
             if cursor.rowcount == 1 and cursor.fetchone()[0] == "PRIMARY KEY":
               column.Caption = "PK"
             table.Columns.append(column)
@@ -157,7 +157,7 @@ class Connection:
         cursor = self.Cursor
         cursor.execute("SHOW TABLE STATUS")
         for tableDefinitions in cursor.fetchall():
-          table = gg.Table(**{"Namespace": self.ConnectionOptions.DatabaseName, "Name": tableDefinitions[0], "Comment": tableDefinitions[-1]})
+          table = gg.Table(**{"Namespace": self.ConnectionConfig.DatabaseName, "Name": tableDefinitions[0], "Comment": tableDefinitions[-1]})
           cursor.execute("""SHOW FULL COLUMNS FROM {}""".format(tableDefinitions[0]))
           for columnDefinitions in cursor.fetchall():
             caption = ""
