@@ -1,5 +1,6 @@
 import dbine as db
 import graspgraph as gg
+from pyemon.path import *
 
 def test_dbine():
   assert(db.Type.PostgreSQL.name == "PostgreSQL")
@@ -14,14 +15,14 @@ def test_dbine():
   assert(db.Type.from_value(db.Type.MySQL.value) == db.Type.MySQL)
   for type in [db.Type.PostgreSQL, db.Type.MySQL]:
     connectionConfig = db.ConnectionConfig(**{"Type": type, "DatabaseName": "db", "UserName": "_user_", "Password": "pass"})
-    yamlFilePath = """./images/connection_options_{}.yaml""".format(type.name.lower())
+    yamlFilePath = """./images/connection_config_{}.yaml""".format(type.name.lower())
     connectionConfig.save(yamlFilePath)
     connectionConfig.load(yamlFilePath)
     with db.Connection(connectionConfig) as connection:
       prefix = """./images/database_{}""".format(type.name.lower())
-      pdfFilePath = gg.Path.join(prefix, "pdf")
-      pngFilePath = gg.Path.join(prefix, "png")
+      pdfFilePath = Path.join(prefix, "pdf")
+      pngFilePath = Path.join(prefix, "png")
       dbergraph = gg.Dbergraph(connection.get_database())
-      dbergraph.Database.update().save(gg.Path.join(prefix, "yaml"))
-      dbergraph.to_dot_helper().write_image(pdfFilePath)
+      dbergraph.Database.update().save(Path.join(prefix, "yaml"))
+      dbergraph.to_dot().Save(pdfFilePath)
       gg.Pdf.convert(pdfFilePath, pngFilePath)

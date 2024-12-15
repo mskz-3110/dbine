@@ -53,7 +53,7 @@ CREATE TABLE relations (
 
 |Version|Summary|
 |:--|:--|
-|0.1.2|Release dbine|
+|0.1.3|Release dbine|
 
 ## Installation
 ### [dbine](https://pypi.org/project/dbine/)
@@ -66,10 +66,10 @@ Required for PDF output
 Required for PDF image conversion
 
 ## CLI
-### pdf write
+### pdf.write
 Write database table definition to PDF
 
-#### 1. Prepare database connection information file(database.yaml)
+#### 1. Prepare database connection config file(database.yaml)
 **[database.yaml]**
 ```yaml
 Type: MySQL
@@ -81,10 +81,10 @@ Port: 0
 ```
 
 #### 2. PDF output by CLI execution
-`dbine pdf write database.yaml database.pdf`
+`dbine pdf.write database.yaml database.pdf`
 
-### pdf convert
+### pdf.convert
 Convert PDF to image
 
 #### 1. Image(PNG) conversion by CLI execution
-`dbine pdf convert database.pdf database.png`
+`dbine pdf.convert database.pdf database.png`

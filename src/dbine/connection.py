@@ -1,8 +1,9 @@
 from enum import Enum
+from pydantic import BaseModel
 import psycopg
 import mysql.connector
-from pydantic import BaseModel
 import graspgraph as gg
+from pyemon.path import *
 import yaml
 
 class Type(Enum):
@@ -71,7 +72,7 @@ class ConnectionConfig(BaseModel):
     return self
 
   def save(self, filePath):
-    gg.Path.from_file_path(filePath).makedirs()
+    Path(Path.split(filePath)[0]).makedirs()
     with open(filePath, "w", encoding = "utf-8", newline = "\n") as file:
       connectionConfig = self.model_dump()
       connectionConfig["Type"] = connectionConfig["Type"].name
