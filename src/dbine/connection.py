@@ -42,23 +42,34 @@ class ConnectionConfig(BaseModel):
           self.Port = 3306
     return self
 
-  def to_string(self):
-    return " ".join([
-      """dbname={}""".format(self.DatabaseName),
-      """host={}""".format(self.Host),
-      """port={}""".format(self.Port),
-      """user={}""".format(self.UserName),
-      """password={}""".format(self.Password),
-    ])
+  def to_options(self):
+    match self.Type:
+      case Type.PostgreSQL:
+        return " ".join([
+          """dbname={}""".format(self.DatabaseName),
+          """host={}""".format(self.Host),
+          """port={}""".format(self.Port),
+          """user={}""".format(self.UserName),
+          """password={}""".format(self.Password),
+        ])
+      case Type.MySQL:
+        return {
+          "database": self.DatabaseName,
+          "host": self.Host,
+          "port": self.Port,
+          "user": self.UserName,
+          "password": self.Password,
+        }
+    return None
 
-  def to_dict(self):
-    return {
-      "database": self.DatabaseName,
-      "host": self.Host,
-      "port": self.Port,
-      "user": self.UserName,
-      "password": self.Password,
-    }
+  def to_string(self):
+    options = self.to_options()
+    if type(options) is str:
+      return options
+    return str(options)
+
+  def __str__(self):
+    return self.to_string()
 
   def load(self, filePath):
     with open(filePath, "r", encoding = "utf-8") as file:
@@ -115,10 +126,10 @@ class Connection:
     connectionConfig.update()
     match connectionConfig.Type:
       case Type.PostgreSQL:
-        connection = psycopg.connect(connectionConfig.to_string())
+        connection = psycopg.connect(connectionConfig.to_options())
         self.__Connections = [connection.cursor(), connection]
       case Type.MySQL:
-        connection = mysql.connector.connect(**connectionConfig.to_dict())
+        connection = mysql.connector.connect(**connectionConfig.to_options())
         self.__Connections = [connection.cursor(), connection]
     self.ConnectionConfig = connectionConfig
     return self

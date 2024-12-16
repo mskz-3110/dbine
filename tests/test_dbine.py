@@ -13,6 +13,12 @@ def test_dbine():
   assert(db.Type.from_name("MySQL") == db.Type.MySQL)
   assert(db.Type.from_value(db.Type.MySQL) == db.Type.MySQL)
   assert(db.Type.from_value(db.Type.MySQL.value) == db.Type.MySQL)
+
+  connectionConfig = db.ConnectionConfig(**{"Type": db.Type.PostgreSQL, "DatabaseName": "db", "UserName": "_user_", "Password": "pass"})
+  assert(connectionConfig.to_string() == "dbname=db host=localhost port=0 user=_user_ password=pass")
+  connectionConfig = db.ConnectionConfig(**{"Type": db.Type.MySQL, "DatabaseName": "db", "UserName": "_user_", "Password": "pass"})
+  assert(connectionConfig.to_string() == "{'database': 'db', 'host': 'localhost', 'port': 0, 'user': '_user_', 'password': 'pass'}")
+
   for type in [db.Type.PostgreSQL, db.Type.MySQL]:
     connectionConfig = db.ConnectionConfig(**{"Type": type, "DatabaseName": "db", "UserName": "_user_", "Password": "pass"})
     yamlFilePath = """./images/connection_config_{}.yaml""".format(type.name.lower())
@@ -24,5 +30,5 @@ def test_dbine():
       pngFilePath = Path.join(prefix, "png")
       dbergraph = gg.Dbergraph(connection.get_database())
       dbergraph.Database.update().save(Path.join(prefix, "yaml"))
-      dbergraph.to_dot().Save(pdfFilePath)
+      dbergraph.to_dot().Write(pdfFilePath)
       gg.Pdf.convert(pdfFilePath, pngFilePath)

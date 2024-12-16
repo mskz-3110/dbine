@@ -53,6 +53,7 @@ CREATE TABLE relations (
 
 |Version|Summary|
 |:--|:--|
+|0.1.4|Improved ease of use|
 |0.1.3|Release dbine|
 
 ## Installation
@@ -80,7 +81,7 @@ Host: localhost
 Port: 0
 ```
 
-#### 2. PDF output by CLI execution
+#### 2. PDF write by CLI execution
 `dbine pdf.write database.yaml database.pdf`
 
 ### pdf.convert
