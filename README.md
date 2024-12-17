@@ -82,10 +82,24 @@ Port: 0
 ```
 
 #### 2. PDF write by CLI execution
+
+```
+pdf.write # <yaml file path> <pdf file path>
+```
 `dbine pdf.write database.yaml database.pdf`
+```
+database.pdf is done.
+```
 
 ### pdf.convert
 Convert PDF to image
 
 #### 1. Image(PNG) conversion by CLI execution
+
+```
+pdf.convert # <pdf file path> <image file path>
+```
 `dbine pdf.convert database.pdf database.png`
+```
+database.png is done.
+```
