@@ -1,0 +1,6 @@
+Type: SQLite
+DatabaseName: ../databases/sqlite.db
+UserName: ''
+Password: ''
+Host: localhost
+Port: 0

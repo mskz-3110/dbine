@@ -398,11 +398,11 @@
         },
         "pyemon": {
             "hashes": [
-                "sha256:698945a278d8b54edc9fa97737c380efb5d371eacae86da1796d647e7a52e72e",
-                "sha256:b9da1fe99c7b03dfbf4ed4c29082d0e4eebbdbdd150813e92dbae99eb82c82e1"
+                "sha256:1915fca348aaed9a23a688fc9ee8ef08e450ffca7db817c7c957d27f8b0ba5d0",
+                "sha256:9a2c8467a905a74cd9271c57531385edf1ebe85aa7ba50bb8e14463199d4dd4f"
             ],
             "markers": "python_version >= '3.13'",
-            "version": "==0.1.4"
+            "version": "==0.1.7"
         },
         "pyyaml": {
             "hashes": [

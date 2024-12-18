@@ -1,0 +1,30 @@
+Tables:
+- Namespace: sqlite
+  Name: no_comments
+  Comment: ''
+  Columns:
+  - Name: id
+    Type: INT
+    Comment: ''
+    Caption: PK
+    Relations:
+    - sqlite.relations.no_comment_id
+  - Name: name
+    Type: VARCHAR(10)
+    Comment: ''
+    Caption: ''
+    Relations: []
+- Namespace: sqlite
+  Name: relations
+  Comment: ''
+  Columns:
+  - Name: id
+    Type: INT
+    Comment: ''
+    Caption: PK
+    Relations: []
+  - Name: no_comment_id
+    Type: INT
+    Comment: ''
+    Caption: FK
+    Relations: []

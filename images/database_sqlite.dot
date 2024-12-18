@@ -1,0 +1,11 @@
+digraph {
+	graph [bgcolor=white dpi=350 fontcolor=black label=<> labeljust=c labelloc=t margin=0 rankdir=LR]
+	node [fontname="Yu Mincho Demibold" shape=none]
+	edge [color=skyblue]
+	subgraph cluster_sqlite {
+		color=black fontcolor=black label=sqlite labeljust=l
+		sqlite_no_comments [label=<<font color="black"><table border="1" cellspacing="0" cellpadding="0" color="gray" bgcolor="gray"><tr><td colspan="2"><b>no_comments</b></td></tr><tr><td bgcolor="white" cellpadding="2" port="id"> id </td><td bgcolor="white" cellpadding="2" align="left"> INT </td><td bgcolor="white" cellpadding="2" align="left"> PK </td></tr><tr><td bgcolor="white" cellpadding="2" port="name"> name </td><td bgcolor="white" cellpadding="2" align="left"> VARCHAR(10) </td><td bgcolor="white" cellpadding="2" align="left">  </td></tr></table></font>>]
+		sqlite_relations [label=<<font color="black"><table border="1" cellspacing="0" cellpadding="0" color="gray" bgcolor="gray"><tr><td colspan="2"><b>relations</b></td></tr><tr><td bgcolor="white" cellpadding="2" port="id"> id </td><td bgcolor="white" cellpadding="2" align="left"> INT </td><td bgcolor="white" cellpadding="2" align="left"> PK </td></tr><tr><td bgcolor="white" cellpadding="2" port="no_comment_id"> no_comment_id </td><td bgcolor="white" cellpadding="2" align="left"> INT </td><td bgcolor="white" cellpadding="2" align="left"> FK </td></tr></table></font>>]
+	}
+	sqlite_relations:no_comment_id -> sqlite_no_comments:id [arrowtail=crow dir=back]
+}

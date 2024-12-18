@@ -2,6 +2,7 @@ from enum import Enum
 from pydantic import BaseModel
 import psycopg
 import mysql.connector
+import sqlite3
 import graspgraph as gg
 from pyemon.path import *
 import yaml
@@ -9,6 +10,7 @@ import yaml
 class Type(Enum):
   PostgreSQL = 1
   MySQL = 2
+  SQLite = 3
 
   @classmethod
   def from_name(cls, name):
@@ -27,8 +29,8 @@ class Type(Enum):
 class ConnectionConfig(BaseModel):
   Type: Type
   DatabaseName: str
-  UserName: str
-  Password: str
+  UserName: str = ""
+  Password: str = ""
   Host: str = "localhost"
   Port: int = 0
 
@@ -60,6 +62,8 @@ class ConnectionConfig(BaseModel):
           "user": self.UserName,
           "password": self.Password,
         }
+      case Type.SQLite:
+        return self.DatabaseName
     return None
 
   def to_string(self):
@@ -83,7 +87,7 @@ class ConnectionConfig(BaseModel):
     return self
 
   def save(self, filePath):
-    Path(Path.split(filePath)[0]).makedirs()
+    Path.from_file_path(filePath).makedirs()
     with open(filePath, "w", encoding = "utf-8", newline = "\n") as file:
       connectionConfig = self.model_dump()
       connectionConfig["Type"] = connectionConfig["Type"].name
@@ -91,8 +95,10 @@ class ConnectionConfig(BaseModel):
     return self
 
   @classmethod
-  def default_dict(cls):
-    return {"Type": Type.PostgreSQL, "DatabaseName": "", "UserName": "", "Password": ""}
+  def default_dict(cls, type = None, databaseName = ""):
+    if type is None:
+      type = Type.PostgreSQL
+    return {"Type": type, "DatabaseName": databaseName}
 
   @classmethod
   def from_yaml(cls, stream):
@@ -130,6 +136,9 @@ class Connection:
         self.__Connections = [connection.cursor(), connection]
       case Type.MySQL:
         connection = mysql.connector.connect(**connectionConfig.to_options())
+        self.__Connections = [connection.cursor(), connection]
+      case Type.SQLite:
+        connection = sqlite3.connect(connectionConfig.to_options())
         self.__Connections = [connection.cursor(), connection]
     self.ConnectionConfig = connectionConfig
     return self
@@ -176,5 +185,17 @@ class Connection:
             if columnDefinitions[4] == "PRI":
               caption = "PK"
             table.Columns.append(gg.Column(**{"Name": columnDefinitions[0], "Type": columnDefinitions[1].upper(), "Comment": columnDefinitions[-1], "Caption": caption}))
+          database.Tables.append(table)
+      case Type.SQLite:
+        cursor = self.Cursor
+        cursor.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
+        for tableDefinitions in cursor.fetchall():
+          table = gg.Table(**{"Namespace": Path.from_file_path(self.ConnectionConfig.DatabaseName).File, "Name": tableDefinitions[0]})
+          cursor.execute("""PRAGMA TABLE_INFO({})""".format(tableDefinitions[0]))
+          for columnDefinitions in cursor.fetchall():
+            caption = ""
+            if columnDefinitions[5] == 1:
+              caption = "PK"
+            table.Columns.append(gg.Column(**{"Name": columnDefinitions[1], "Type": columnDefinitions[2].upper(), "Caption": caption}))
           database.Tables.append(table)
     return database
