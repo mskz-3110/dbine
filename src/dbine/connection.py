@@ -157,13 +157,13 @@ class Connection:
         cursor = self.Cursor
         cursor.execute("SELECT schemaname, tablename FROM pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema'")
         for tableDefinitions in cursor.fetchall():
-          table = gg.Table(**{"Namespace": """{}.{}""".format(self.ConnectionConfig.DatabaseName, tableDefinitions[0]), "Name": tableDefinitions[1]})
+          table = gg.DatabaseTable(**{"Namespace": """{}.{}""".format(self.ConnectionConfig.DatabaseName, tableDefinitions[0]), "Name": tableDefinitions[1]})
           cursor.execute("""SELECT pg_description.description FROM pg_class JOIN pg_description ON pg_class.oid = pg_description.objoid WHERE pg_class.relname = '{}' AND pg_description.objsubid = 0""".format(tableDefinitions[1]))
           if cursor.rowcount == 1:
             table.Comment = cursor.fetchone()[0]
           cursor.execute("""SELECT column_name, data_type, character_maximum_length, ordinal_position FROM information_schema.columns WHERE table_schema = '{}' AND table_name = '{}'""".format(*tableDefinitions))
           for columnDefinitions in cursor.fetchall():
-            column = gg.Column(**{"Name": columnDefinitions[0], "Type": columnDefinitions[1].upper()})
+            column = gg.DatabaseColumn(**{"Name": columnDefinitions[0], "Type": columnDefinitions[1].upper()})
             if columnDefinitions[2] is not None:
               column.Type = """{}({})""".format(column.Type, columnDefinitions[2])
             cursor.execute("""SELECT pg_description.description FROM pg_class JOIN pg_description ON pg_class.oid = pg_description.objoid WHERE pg_class.relname = '{}' AND pg_description.objsubid = {}""".format(tableDefinitions[1], columnDefinitions[3]))
@@ -178,24 +178,24 @@ class Connection:
         cursor = self.Cursor
         cursor.execute("SHOW TABLE STATUS")
         for tableDefinitions in cursor.fetchall():
-          table = gg.Table(**{"Namespace": self.ConnectionConfig.DatabaseName, "Name": tableDefinitions[0], "Comment": tableDefinitions[-1]})
+          table = gg.DatabaseTable(**{"Namespace": self.ConnectionConfig.DatabaseName, "Name": tableDefinitions[0], "Comment": tableDefinitions[-1]})
           cursor.execute("""SHOW FULL COLUMNS FROM {}""".format(tableDefinitions[0]))
           for columnDefinitions in cursor.fetchall():
             caption = ""
             if columnDefinitions[4] == "PRI":
               caption = "PK"
-            table.Columns.append(gg.Column(**{"Name": columnDefinitions[0], "Type": columnDefinitions[1].upper(), "Comment": columnDefinitions[-1], "Caption": caption}))
+            table.Columns.append(gg.DatabaseColumn(**{"Name": columnDefinitions[0], "Type": columnDefinitions[1].upper(), "Comment": columnDefinitions[-1], "Caption": caption}))
           database.Tables.append(table)
       case Type.SQLite:
         cursor = self.Cursor
         cursor.execute("SELECT name FROM sqlite_master WHERE type = 'table'")
         for tableDefinitions in cursor.fetchall():
-          table = gg.Table(**{"Namespace": Path.from_file_path(self.ConnectionConfig.DatabaseName).File, "Name": tableDefinitions[0]})
+          table = gg.DatabaseTable(**{"Namespace": Path.from_file_path(self.ConnectionConfig.DatabaseName).File, "Name": tableDefinitions[0]})
           cursor.execute("""PRAGMA TABLE_INFO({})""".format(tableDefinitions[0]))
           for columnDefinitions in cursor.fetchall():
             caption = ""
             if columnDefinitions[5] == 1:
               caption = "PK"
-            table.Columns.append(gg.Column(**{"Name": columnDefinitions[1], "Type": columnDefinitions[2].upper(), "Caption": caption}))
+            table.Columns.append(gg.DatabaseColumn(**{"Name": columnDefinitions[1], "Type": columnDefinitions[2].upper(), "Caption": caption}))
           database.Tables.append(table)
     return database
