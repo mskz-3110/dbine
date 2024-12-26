@@ -54,7 +54,7 @@ CREATE TABLE relations (
 
 |Version|Summary|
 |:--|:--|
-|0.1.5|Added SQLite to supported databases|
+|0.1.6|Added SQLite to supported databases|
 |0.1.4|Improved ease of use|
 |0.1.3|Release dbine|
 

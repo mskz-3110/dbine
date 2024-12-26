@@ -14,7 +14,7 @@ class PdfWriteTask(Task):
       dbergraph = gg.Dbergraph(connection.get_database())
       dbergraph.Database.update()
       dbergraph.to_dot().Write(pdfFilePath, cleanup = True)
-      print(FileStatus(pdfFilePath, "done"))
+      print(Status(pdfFilePath, "done"))
 Task.set(PdfWriteTask("<yaml file path> <pdf file path>"))
 
 Task.set(PdfConvertTask())

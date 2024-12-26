@@ -51,12 +51,12 @@
         },
         "graspgraph": {
             "hashes": [
-                "sha256:f3576236df831881264f41107682a8a64d08fcf67cb747f09f804c60beb95826",
-                "sha256:fd260d8776796822696f4df3c6b83eb8176c734a78dcf4f232d872b642cf299a"
+                "sha256:2edbd7d063d080b32a86966db42b669161a265fbcfa121fcb6073880e5493903",
+                "sha256:92c02b61461e482d09b79a4dc42b35fa8bafcd901155da1d8a5f2cacdfe64556"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.13'",
-            "version": "==0.3.1"
+            "version": "==0.3.2"
         },
         "inflection": {
             "hashes": [
@@ -398,11 +398,11 @@
         },
         "pyemon": {
             "hashes": [
-                "sha256:1915fca348aaed9a23a688fc9ee8ef08e450ffca7db817c7c957d27f8b0ba5d0",
-                "sha256:9a2c8467a905a74cd9271c57531385edf1ebe85aa7ba50bb8e14463199d4dd4f"
+                "sha256:4fd4183b7582d29ce38b6056e1e39a4a4473a2397cd4df2afbd572705b4b4028",
+                "sha256:73200709c580c97c063dfe750ac99c591e7bbbb2c1e82ff4e1d10baa94b5ccdd"
             ],
             "markers": "python_version >= '3.13'",
-            "version": "==0.1.7"
+            "version": "==0.2.1"
         },
         "pyyaml": {
             "hashes": [
